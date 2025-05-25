@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Merci - WLT USTHB</title>
+  <link rel="icon" href="Assets/Logo,_USTHB.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="Styles/confirmation.css" />
+</head>
+<body>
+  <div class="thank-you-box" id="thankYouBox">
+    <img src="Assets/Logo,_USTHB.png" alt="Logo USTHB" class="usthb-logo" />
+    <h1>🎉 Merci d’avoir rempli la fiche de vœux !</h1>
+    <p>Votre fiche a été enregistrée avec succès.</p>
+    <p>Vous pouvez maintenant consulter un résumé de vos choix.</p>
+    <button class="see-choices-btn">Voir mes choix</button>
+  </div>
+
+  <!-- Hidden by default, shown after clicking "Voir mes choix" -->
+  <div class="confirmation-container hidden" id="summaryBox">
+    <h1>✅ Récapitulatif</h1>
+    <p>Voici les informations enregistrées :</p>
+
+    <div class="summary">
+      <p><strong>Nom :</strong> <span id="userName">--</span></p>
+      <p><strong>Email :</strong> <span id="userEmail">--</span></p>
+      <hr />
+      <h3>Choix Semestre 1 :</h3>
+      <ul id="sem1Choices"></ul>
+      <h3>Choix Semestre 2 :</h3>
+      <ul id="sem2Choices"></ul>
+      <h3>Informations Supplémentaires :</h3>
+      <ul id="extras"></ul>
+    </div>
+
+    <a href="Loged%20in.html" class="return-button">Retour à l’accueil</a>
+  </div>
+
+  <script type="module">
+  import { renderConfirmation } from "./JS_Files/confirmation.js";
+  document.querySelector(".see-choices-btn").addEventListener("click", renderConfirmation);
+</script>
+
+</body>
+</html>

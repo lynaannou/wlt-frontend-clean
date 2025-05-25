@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>WLT USTHB – Fiche de Vœux</title>
+  <link rel="icon" href="Assets/Logo,_USTHB.png" />
+  <link rel="stylesheet" href="Styles/Fiche_de_voeux.css" />
+</head>
+
+<body>
+  <!-- ╔══════════════════╗
+       ║  PROF INFO BAR   ║
+       ╚══════════════════╝ -->
+  <div class="user">
+    <img class="user_img" src="Assets/contacts-512.png" />
+    <div class="user_info">
+      <h3 id="displayUsername">Professeur</h3>
+      <h4><span id="displayEmail">—</span></h4>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════╗
+       ║  SEMESTRE 1      ║
+       ╚══════════════════╝ -->
+  <div id="semestre1" class="choix">
+    <h2 class="head">Choix du Semestre 1</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Choix</th><th>Niveau</th><th>Spécialité</th><th>Module</th>
+          <th>Semestre</th><th>Cours</th><th>TD</th><th>TP</th>
+        </tr>
+      </thead>
+      <tbody id="sem1Rows"></tbody>
+    </table>
+    
+  </div>
+
+  <!-- ╔══════════════════╗
+       ║  SEMESTRE 2      ║
+       ╚══════════════════╝ -->
+  <div id="semestre2" class="choix hidden">
+    <h2 class="head">Choix du Semestre 2</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Choix</th><th>Niveau</th><th>Spécialité</th><th>Module</th>
+          <th>Semestre</th><th>Cours</th><th>TD</th><th>TP</th>
+        </tr>
+      </thead>
+      <tbody id="sem2Rows"></tbody>
+    </table>
+ 
+  </div>
+
+  <!-- ╔══════════════════╗
+       ║  QUESTIONS EXTRA ║
+       ╚══════════════════╝ -->
+  <div id="questions" class="choix hidden">
+    <h2 class="head">Questions Supplémentaires</h2>
+
+    <div class="questions-grid">
+      <div class="question-card">
+        <div class="question-label">Faire des heures sup. en S1 ?</div>
+        <input type="number" id="extraS1" class="number-field" value="0" min="0" max="6" />
+      </div>
+
+      <div class="question-card">
+        <div class="question-label">Faire des heures sup. en S2 ?</div>
+        <input type="number" id="extraS2" class="number-field" value="0" min="0" max="6" />
+      </div>
+
+      <div class="question-card">
+        <div class="question-label">Nombre de PFE Licence :</div>
+        <input type="number" id="licenceCount" class="number-field" value="1" min="1" />
+      </div>
+
+      <div class="question-card">
+        <div class="question-label">Nombre de PFE Master :</div>
+        <input type="number" id="masterCount" class="number-field" value="1" min="1" />
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">Quel est votre grade ?</div>
+      <select id="grade" class="text-field" required>
+        <option disabled selected>-- Choisir --</option>
+        <option value="PROF">Professeur</option>
+<option value="MCA">MCA</option>
+<option value="MCB">MCB</option>
+<option value="MAA">MAA</option>
+<option value="MAB">MAB</option>
+
+      </select>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">Numéro de bureau</div>
+      <input type="text" id="officeNum" class="text-field" />
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">E-mail préféré</div>
+      <input type="text" id="emailPref" class="text-field" />
+    </div>
+
+    <!-- Hidden flag “veut-il des heures sup ?” -->
+    <input type="checkbox" id="extraCheckbox" class="hidden">
+  </div>
+
+  <!-- ╔══════════════════╗
+       ║  NAVIGATION      ║
+       ╚══════════════════╝ -->
+  <div class="navigate">
+    <button id="prev"  class="navigate_button hidden">&larr; Précédent</button>
+    <div>
+      <button id="next"      class="navigate_button">Suivant &rarr;</button>
+      <button id="btn-submit" class="navigate_button hidden">✅ Terminer</button>
+      <!-- ADMIN buttons (debug) -->
+      <button id="btn-status" class="navigate_button">Statut ?</button>
+      <button id="btn-locked" class="navigate_button">Verrouillé ?</button>
+      <button id="btn-prefill" class="navigate_button">Préremplir</button>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════╗
+       ║  INLINE JS (only row-factory + nav toggles)        ║
+       ╚══════════════════╝ -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Affichage des infos utilisateur
+    document.getElementById("displayUsername").textContent = localStorage.getItem("username") || "Professeur";
+    document.getElementById("displayEmail").textContent = localStorage.getItem("email") || "—";
+
+    // Gestion du passage entre les étapes
+    let step = 1;
+    const sem1 = document.getElementById("semestre1");
+    const sem2 = document.getElementById("semestre2");
+    const questions = document.getElementById("questions");
+
+    const prev = document.getElementById("prev");
+    const next = document.getElementById("next");
+    const done = document.getElementById("btn-submit");
+
+    next.onclick = () => {
+      if (step === 1) {
+        sem1.classList.add("hidden");
+        sem2.classList.remove("hidden");
+      } else if (step === 2) {
+        sem2.classList.add("hidden");
+        questions.classList.remove("hidden");
+        next.classList.add("hidden");
+        done.classList.remove("hidden");
+      }
+      step++;
+      prev.classList.remove("hidden");
+    };
+
+    prev.onclick = () => {
+      if (step === 2) {
+        sem1.classList.remove("hidden");
+        sem2.classList.add("hidden");
+        prev.classList.add("hidden");
+      } else if (step === 3) {
+        sem2.classList.remove("hidden");
+        questions.classList.add("hidden");
+        next.classList.remove("hidden");
+        done.classList.add("hidden");
+      }
+      step--;
+    };
+
+    // 🔁 Heures sup logiques exclusives
+    const extraS1 = document.getElementById("extraS1");
+    const extraS2 = document.getElementById("extraS2");
+
+    function toggleExtraFields() {
+      const valS1 = parseInt(extraS1.value) || 0;
+      const valS2 = parseInt(extraS2.value) || 0;
+
+      extraS2.disabled = valS1 > 0;
+      extraS1.disabled = valS2 > 0;
+    }
+
+    extraS1.addEventListener("input", toggleExtraFields);
+    extraS2.addEventListener("input", toggleExtraFields);
+    toggleExtraFields();
+    const licenceCount = document.getElementById("licenceCount");
+const masterCount = document.getElementById("masterCount");
+
+function enforceMinValue(input) {
+  input.addEventListener("input", () => {
+    let val = parseInt(input.value) || 0;
+    if (val < 1) input.value = 1;
+  });
+}
+
+enforceMinValue(licenceCount);
+enforceMinValue(masterCount);
+  });
+</script>
+
+
+  <!-- ╔══════════════════╗
+       ║  MAIN MODULE JS  ║  (connects to backend)
+       ╚══════════════════╝ -->
+       
+ 
+<script type="module" src="JS_Files/ficheHandler.js"></script>
+<script type="module" src="JS_Files/Fiche_de_voeux.js"></script>
+<script type="module" src="JS_Files/ficheActions.js"></script>
+
+
+</body>
+</html>

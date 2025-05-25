@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WLT USTHB – Logged in</title>
+
+  <!-- styles -->
+  <link rel="stylesheet" href="Styles/css.css" />
+  <link rel="stylesheet" href="Styles/loged in.css" />
+
+  <style>
+    #statLink { display: none; }
+    #deadlineCountdown{
+      text-align:center;
+      margin:20px 0;
+      font-weight:bold;
+      color:#b10000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🕒 Deadline -->
+  <div id="deadlineCountdown" class="warning"></div>
+
+  <!-- user info -->
+  <div class="user">
+    <img class="user_img" src="Assets/contacts-512.png" />
+    <div class="user_info">
+      <h3 id="displayUsername">UserName</h3>
+      <h4 id="displayEmail">Email@gmail.com</h4>
+      <h5 id="displayProfId" style="font-weight: normal; font-size: 14px;"></h5>
+    </div>
+  </div>
+
+  <!-- menu -->
+  <div class="centre">
+    <div class="FicheDeVoeux">
+      <a href="Fiche_de_voeux.html">
+        <img class="logo" src="Assets/list-ingredients-512.png" alt="Fiche de Voeux" />
+      </a>
+      <h4>Fiche de Voeux</h4>
+    </div>
+
+    <div class="Négociation">
+      <a href="Negociation.html">
+        <img class="logo" src="Assets/speech-bubble-5-512.png" alt="Négociation" />
+      </a>
+      <h4>Négociations</h4>
+    </div>
+
+    <div class="Statistiques" id="statLink">
+      <a href="statistiques_wlt_usthb_complete.html">
+        <img class="logo" src="Assets/bar-graph.png" alt="Statistiques" />
+      </a>
+      <h4>Statistiques</h4>
+    </div>
+  </div>
+  <h5>CHOISIS UNE OPTION</h5>
+
+  <!-- Axios CDN -->
+  <!--<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>-->
+
+  <!-- Page logic -->
+  <!-- adjust path if JS_Files lives elsewhere -->
+  <script type="module" src="JS_Files/Logedin.js"></script>
+   
+</body>
+</html>

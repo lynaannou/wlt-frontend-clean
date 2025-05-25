@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #21195a, #6c4785, #8a6fa0);
+  background-size: 400% 400%;
+  animation: backgroundShift 15s ease infinite;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.chat-container {
+  display: flex;
+  height: 80vh;
+  background: #4b2c5e;
+  border-radius: 20px;
+  overflow: hidden;
+  color: white;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar {
+  width: 30%;
+  background-color: #3a2350;
+  padding: 15px;
+  overflow-y: auto;
+  border-right: 2px solid #5FA9DD;
+}
+
+.sidebar h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+#conversationList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#conversationList button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #5FA9DD;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.3s;
+}
+
+#conversationList button:hover {
+  background-color: #3c8dc3;
+}
+
+#conversationList button.active {
+  background-color: #ffffff22;
+  border: 1px solid #ffffff44;
+  font-weight: bold;
+}
+
+.chat-main {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.chat-header h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.chat-window {
+  flex-grow: 1;
+  background: #593c73;
+  border-radius: 10px;
+  padding: 15px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  word-wrap: break-word;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 16px;
+}
+
+.chat-input button {
+  background: #5FA9DD;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.chat-input button:hover {
+  background-color: #4095cd;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.message.sent {
+  text-align: right;
+  background-color: #5FA9DD;
+  color: white;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 10px;
+  border-radius: 10px;
+  list-style: none;
+  width: fit-content;
+  max-width: 70%;
+}
+
+.message.received {
+  text-align: left;
+  background-color: #8e44ad;
+  color: white;
+  margin-right: auto;
+  margin-left: 0;
+  padding: 10px;
+  border-radius: 10px;
+  list-style: none;
+  width: fit-content;
+  max-width: 70%;
+}
+
+/* Supprimer la sidebar côté professeur */
+body.prof-mode .sidebar {
+  display: none;
+}
+
+/* Faire occuper tout l'espace au chat-main quand la sidebar est absente */
+body.prof-mode .chat-main {
+  width: 100%;
+}

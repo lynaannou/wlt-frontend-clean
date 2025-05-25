@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>WLT USTHB: Statistiques</title>
+  <link rel="stylesheet" href="Styles/Statistiques.css" />
+  <link rel="icon" href="Assets/Logo,_USTHB.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  
+  <div class="container">
+    <h1>📊 Statistiques Générales</h1>
+
+   
+
+    <div class="prof-list">
+      <h2>👤 Liste des Professeurs</h2>
+      <div id="professorButtons" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px;"></div>
+    </div>
+
+    <div class="stats-box" id="statsSection">
+      <p>Total de professeurs inscrits: <span id="profCount">--</span></p>
+      
+    </div>
+
+    <div class="chart-area" id="printArea">
+      <canvas id="barChart" width="400" height="250"></canvas>
+    </div>
+
+    <div class="buttons-area" style="margin-top: 40px;">
+  <button onclick="downloadBackendExcel(1)">📥 Excel S1</button>
+  <button onclick="downloadBackendExcel(2)">📥 Excel S2</button>
+  <button onclick="downloadPDF(1)">🧾 PDF S1</button>
+  <button onclick="downloadPDF(2)">🧾 PDF S2</button>
+  <button onclick="window.print()">🖨️ Imprimer</button>
+</div>
+  </div>
+
+  <script>
+    const email = localStorage.getItem("email");
+    const isChef = localStorage.getItem("isChef");
+
+    if (isChef !== "true") {
+      alert("Accès réservé aux chefs de département.");
+      window.location.href = "index.html";
+    }
+
+    const storedDepartementId = localStorage.getItem("departementId");
+
+    if (!storedDepartementId) {
+      fetch(`http://localhost:8080/api/professeurs/by-email?email=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(professeur => {
+  if (professeur?.departement) {
+    localStorage.setItem("departementId", professeur.departement);
+    localStorage.setItem("professeurId", professeur.id); // ✅ ADD THIS LINE
+    startStats(professeur.departement);
+  } else {
+    alert("Impossible de récupérer le département du professeur.");
+  }
+})
+;
+    } else {
+      startStats(storedDepartementId);
+    }
+
+    async function startStats(departementId) {
+  const response = await fetch(`http://localhost:8080/api/form/inscrits/${departementId}`);
+  const rawProfessors = await response.json();
+
+  // Fetch full voeux per prof
+  const enrichedProfessors = await Promise.all(rawProfessors.map(async (prof) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/form/get?professeurId=${prof.id}`);
+      const data = await res.json();
+
+      console.log(`📦 Données récupérées pour ${prof.name} :`, data);
+
+      const enriched = {
+        ...prof,
+        semestre1: data.semestre1 || [],
+        semestre2: data.semestre2 || [],
+        questions: {
+          wantsExtraCourses: data.wantsExtraCourses ?? false,
+          extraHoursS1: data.extraHoursS1 ?? 0,
+          extraHoursS2: data.extraHoursS2 ?? 0,
+          proposedLicence: data.proposedLicence ?? 0,
+          proposedMaster: data.proposedMaster ?? 0
+        }
+      };
+
+      console.log("✅ Prof enrichi :", enriched);
+      return enriched;
+
+    } catch (e) {
+      console.warn(`❌ Erreur lors de la récupération des voeux pour ${prof.name}`, e);
+      return { ...prof };
+    }
+  }));
+
+  console.log("📊 Professeurs enrichis finaux :", enrichedProfessors);
+  localStorage.setItem("professors", JSON.stringify(enrichedProfessors));
+  updateStatsAndUI(enrichedProfessors);
+}
+function downloadBackendExcel(semestre) {
+  const profId = localStorage.getItem("professeurId"); // Tu dois t’assurer que c’est bien stocké
+
+  if (!profId) {
+    alert("Identifiant du chef de département introuvable.");
+    return;
+  }
+
+  const url = `http://localhost:8080/api/admin/export/s${semestre}?profId=${profId}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error("Erreur lors de la génération du fichier.");
+      return response.blob();
+    })
+    .then(blob => {
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `voeux_semestre${semestre}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    })
+    .catch(err => {
+      console.error("❌ Téléchargement échoué :", err);
+      alert("Erreur pendant le téléchargement du fichier Excel.");
+    });
+}
+    function updateStatsAndUI(professors) {
+      console.log("🔁 Mise à jour de l'interface avec :", professors);
+      localStorage.setItem("professors", JSON.stringify(professors));
+
+      const stats = {
+        profCount: professors.length,
+        
+      };
+
+      document.getElementById("profCount").textContent = stats.profCount;
+      
+
+      renderFilteredList(professors);
+      createParticipationGraph();
+    }
+
+    function renderFilteredList(professors) {
+      const container = document.getElementById("professorButtons");
+      container.innerHTML = "";
+      professors.forEach(p => {
+        const btn = document.createElement("button");
+        btn.textContent = p.name;
+        btn.className = "login_button";
+        btn.onclick = () => {
+          window.location.href = `professor.html?id=${p.id}`;
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function createParticipationGraph() {
+  const allProfs = JSON.parse(localStorage.getItem("allProfessors") || "[]");
+  const departementId = parseInt(localStorage.getItem("departementId"));
+
+
+  console.log("📦 allProfs:", allProfs);
+  console.log("🏷️ storedDepartementId:", storedDepartementId, typeof storedDepartementId);
+
+  const profsInDept = allProfs.filter(p => p.departementId === departementId);
+
+  console.log("📊 Profs du département :", profsInDept.length);
+
+  const profsInscrits = JSON.parse(localStorage.getItem("professors") || "[]");
+  const inscrits = profsInscrits.length;
+  const total = profsInDept.length;
+  const nonInscrits = total - inscrits;
+
+  const ctx = document.getElementById("barChart").getContext("2d");
+  new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: ["Total Profs", "Inscrits", "Non inscrits"],
+    datasets: [{
+      label: "Statistiques",
+      backgroundColor: ["#DE3163", "#FF69B4", "#FFB6C1"],
+      data: [total, inscrits, nonInscrits]
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Statistiques d'inscription",
+        color: '#FFFFFF' // ✅ Title color
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#FFFFFF' // ✅ X-axis label color
+        }
+      },
+      y: {
+        ticks: {
+          color: '#FFFFFF' // ✅ Y-axis label color
+        }
+      }
+    }
+  }
+});
+    }
+    function prepareData(semestre) {
+  const professors = JSON.parse(localStorage.getItem("professors") || "[]");
+  const rows = [];
+
+  professors.forEach(p => {
+    const mods = semestre === 1 ? (p.semestre1 || []) : (p.semestre2 || []);
+    if (!mods.length) return;
+
+    mods.forEach((mod, i) => {
+      rows.push({
+        "Nom": p.name,
+        "Email": p.email,
+        "Département": p.departement || "",
+        "Grade": p.grade || "",
+        "Choix / Module": `Choix ${i + 1} / ${mod.name}`,
+        "Cours": mod.cours ? "Oui" : "Non",
+        "TD": mod.td ? "Oui" : "Non",
+        "TP": mod.tp ? "Oui" : "Non",
+        "Heures Suppl.": i === 0 ? (p.questions?.[`Heures supplémentaires S${semestre}`] || "") : "",
+        "PFE Licence": i === 0 ? (p.questions?.["PFE Licence"] || "") : "",
+        "PFE Master": i === 0 ? (p.questions?.["PFE Master"] || "") : ""
+      });
+    });
+  });
+
+  return rows;
+}
+
+
+async function downloadPDF(semestre) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("landscape");
+  pdf.setFontSize(16);
+  pdf.text(`Statistiques des Professeurs - Semestre ${semestre}`, 14, 20);
+
+  const professors = JSON.parse(localStorage.getItem("professors") || "[]");
+  console.log("📦 Professeurs récupérés depuis localStorage :", professors);
+
+  const tableData = [];
+
+  professors.forEach((p, idx) => {
+    console.log(`🔍 Traitement du professeur ${idx + 1} : ${p.name} ${p.prenom}`);
+
+    const voeux = (semestre === 1 ? p.semestre1 : p.semestre2) || [];
+    console.log(`🧾 Vœux Semestre ${semestre} :`, voeux);
+
+    const choixModules = [null, null, null];
+
+    voeux.forEach(v => {
+      const index = (v.numChoix || 1) - 1;
+      if (index >= 0 && index < 3) {
+        choixModules[index] = {
+          nom: v.module?.nom || "",
+          nature: (v.nature || []).join(", "),
+          niveau: v.module?.pallier || "",
+          specialite: v.module?.specialite || ""
+        };
+      }
+    });
+
+    console.log("📚 Modules structurés :", choixModules);
+
+    const q = p.questions || {};
+    console.log("📋 Questions/besoins :", q);
+
+    const row = [
+      p.name || "",
+      p.prenom || "",
+      p.email || "",
+      p.numBureau != null ? p.numBureau : ""
+    ];
+    console.log("📄 Info prof (identité) :", row.slice(0, 4));
+
+    choixModules.forEach((c, i) => {
+      const modData = [c?.nom || "", c?.nature || "", c?.niveau || "", c?.specialite || ""];
+      console.log(`📘 Choix ${i + 1} :`, modData);
+      row.push(...modData);
+    });
+
+    const hasExtra = q.wantsExtraCourses ? "Oui" : "Non";
+    const heuresSupp = semestre === 1 ? q.extraHoursS1 ?? 0 : q.extraHoursS2 ?? 0;
+
+    console.log("⏱️ Heures supp ?", hasExtra);
+    console.log("⏳ Nombre heures supp :", heuresSupp);
+    console.log("🎓 PFE Licence :", q.proposedLicence);
+    console.log("🎓 PFE Master :", q.proposedMaster);
+
+    row.push(hasExtra);
+    row.push(heuresSupp);
+    row.push(q.proposedLicence ?? 0);
+    row.push(q.proposedMaster ?? 0);
+
+    console.log("✅ Ligne finale pour autoTable :", row);
+    tableData.push(row);
+  });
+
+  console.log("📊 Données finales à exporter :", tableData);
+
+  pdf.autoTable({
+    head: [[
+      "Nom", "Prénom", "Email", "Bureau",
+      "Module 1", "Type 1", "Pallier 1", "Spécialité 1",
+      "Module 2", "Type 2", "Pallier 2", "Spécialité 2",
+      "Module 3", "Type 3", "Pallier 3", "Spécialité 3",
+      "Heures supp ?", "Nbr", "PFE Licence", "PFE Master"
+    ]],
+    body: tableData,
+    startY: 30,
+    styles: { fontSize: 9 },
+    theme: "grid"
+  });
+
+  console.log("📥 Téléchargement du PDF...");
+  pdf.save(`voeux_semestre${semestre}.pdf`);
+}
+
+  </script>
+</body>
+</html>

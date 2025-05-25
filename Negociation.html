@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WLT USTHB: Négociations</title>
+  <link rel="stylesheet" href="Styles/Negociation.css" />
+  <link rel="icon" href="Assets/Logo,_USTHB.png" />
+</head>
+<body>
+  <div class="chat-container">
+    <div class="sidebar" id="sidebar">
+      <h3>Conversations</h3>
+      <div id="conversationList"></div>
+    </div>
+
+    <div class="chat-main">
+      <div class="chat-header">
+        <h2 id="chatWith">Sélectionnez une conversation</h2>
+      </div>
+      <div id="stats" style="padding: 10px; font-weight: bold;"></div>
+
+      <div class="chat-window" id="messages"></div>
+
+      <form id="chatForm" class="chat-input hidden">
+        <input type="text" id="chatInput" placeholder="Écrivez un message..." />
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="JS_Files/Negociation.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WLT USTHB</title>
+  <link rel="icon" href="Assets/Logo,_USTHB.png" />
+  <link rel="stylesheet" href="Styles/css.css" />
+  <link rel="stylesheet" href="Styles/Buttons.css" />
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div id="preload" class="preload">
+    <div class="diamond">
+      <img src="Assets/usthb_transparent.png" />
+    </div>
+    <h1>WLT USTHB</h1>
+  </div>
+
+  <!-- Main Container -->
+  <div id="container" class="container hidden">
+    <div class="navbar">
+
+      <!-- LOGIN PROMPT -->
+      <div id="already" class="welcome blue-panel hidden">
+        <h1>Welcome Back!</h1>
+        <img class="logo_img" src="Assets/Logo,_USTHB.png" />
+        <div>
+          <h5>Already have an account?</h5>
+          <button id="aleady_login" class="register_button"><h2>Login</h2></button>
+        </div>
+      </div>
+
+      <!-- REGISTER PROMPT -->
+      <div id="welcome" class="welcome blue-panel">
+        <h1>Hello, Welcome!</h1>
+        <img class="logo_img" src="Assets/Logo,_USTHB.png" />
+        <div>
+          <h5>Don't have an account?</h5>
+          <button id="register" class="register_button"><h2>Register</h2></button>
+        </div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login" class="login purple-panel">
+        <h1>Login</h1>
+        <form id="loginForm">
+          <div class="username">
+            <img class="mail_img" src="Assets/mail-512.png" />
+            <input id="emailInput" type="email" placeholder="Email" required />
+          </div>
+          <div class="password">
+            <img id="password" class="key_img" src="Assets/key-4-512.png" />
+            <input id="passwordInput" type="password" placeholder="Password" required />
+          </div>
+          <button id="loginBtn" type="button" class="login_button"><h3>Login</h3></button>
+        </form>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="registerr" class="register purple-panel hidden">
+        <h1>Register</h1>
+        <form id="registerForm">
+          <div class="username">
+            <img class="mail_img" src="Assets/mail-512.png" />
+            <input id="regEmail" type="email" placeholder="Email" required />
+          </div>
+          <div class="username">
+            <img class="mail_img" src="Assets/contacts-512.png" />
+            <input id="regName" type="text" placeholder="Name" required />
+          </div>
+          <div class="username">
+            <img class="mail_img" src="Assets/contacts-512.png" />
+            <input id="regSurname" type="text" placeholder="Family Name" required />
+          </div>
+          <div class="password">
+            <img class="key_img" src="Assets/key-4-512.png" />
+            <input id="regPassword" type="password" placeholder="Password" required />
+          </div>
+
+           
+
+          <!-- NEW FIELDS -->
+          
+          <div class="username">
+            <label for="departementSelect">Département</label>
+            <select id="departementSelect" required>
+              <option disabled selected>-- Choisir --</option>
+              <option value="ia">Intelligence Artificielle</option>
+              <option value="SIQ">SIQ</option>
+            </select>
+          </div>
+
+          <button id="loginBtn" type="button" class="login_button"><h3>Login</h3></button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <!-- Axios -->
+   <!--<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>-->
+
+  <!-- JS for panel toggling and UX -->
+  <script src="JS_Files/index.js"></script>
+  
+  <!-- Main module logic -->
+  <!--<script type="module">
+    //import { login, register } from "./JS_Files/api.js";
+
+    //document.addEventListener("DOMContentLoaded", () => {
+      // LOGIN SUBMISSION
+      //document.getElementById("loginForm").addEventListener("submit", async (e) => {
+       // e.preventDefault();
+        //const email = document.getElementById("emailInput").value;
+        //const password = document.getElementById("passwordInput").value;
+
+        //try {
+          //const res = await login({ email, password });
+          
+          //alert("Connexion réussie !");
+          //localStorage.setItem("email", email);
+         // localStorage.setItem("username", email.split("@")[0]);
+          //window.location.href = "Loged in.html";
+        //} catch (err) {
+         // alert("Email ou mot de passe invalide !");
+          //console.error(err);
+        //}
+         //});
+
+      // REGISTER SUBMISSION
+      document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const user = {
+          email: document.getElementById("regEmail").value,
+          nom: document.getElementById("regName").value,
+          prenom: document.getElementById("regSurname").value,
+          password: document.getElementById("regPassword").value,
+          
+          departement: document.getElementById("departementSelect").value,
+        };
+
+        try {
+          await register(user);
+          alert("Inscription réussie !");
+          localStorage.setItem("username", `${user.nom} ${user.prenom}`);
+          localStorage.setItem("email", user.email);
+          window.location.href = "Loged in.html";
+        } catch (err) {
+          alert("Erreur lors de l'inscription !");
+          console.error(err);
+        }
+      });
+    //});-->
+  </script>
+</body>
+</html>
