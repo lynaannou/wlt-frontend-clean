@@ -2,7 +2,7 @@ const axios = window.axios;
 
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api", // à adapter selon le port
+  baseURL: "https://wlt-usthb-backend.onrender.com/api", // à adapter selon le port
 });
 
 export const login = (credentials) => API.post("/auth/login", credentials);

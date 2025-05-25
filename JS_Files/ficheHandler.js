@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/form";
+const BASE_URL = "https://wlt-usthb-backend.onrender.com/api/form";
 
 // Soumettre le formulaire
 export async function submitForm(data) {

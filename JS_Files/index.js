@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("passwordInput").value;
 
       try {
-        const response = await fetch("http://localhost:8080/api/auth/login", {
+        const response = await fetch("https://wlt-usthb-backend.onrender.com/api/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

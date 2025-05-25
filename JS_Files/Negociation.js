@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (isAdmin) {
-    fetch(`http://localhost:8080/api/professeurs/by-email?email=${encodeURIComponent(email)}`)
+    fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-email?email=${encodeURIComponent(email)}`)
       .then(res => {
         if (!res.ok) throw new Error("Professeur introuvable");
         return res.json();
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   } else {
     // Professeur
-    fetch(`http://localhost:8080/api/professeurs/conversation-with-chef/${currentUserId}`)
+    fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/conversation-with-chef/${currentUserId}`)
       .then(res => res.json())
       .then(id => {
         conversationId = id;
@@ -82,7 +82,7 @@ chatForm.addEventListener("submit", function (e) {
   const newMessage = messageInput.value.trim();
   if (!newMessage) return;
 
-  fetch("http://localhost:8080/api/messagerie/messages/send", {
+  fetch("https://wlt-usthb-backend.onrender.com/api/messagerie/messages/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -105,7 +105,7 @@ chatForm.addEventListener("submit", function (e) {
 function loadConversations() {
   if (!isAdmin) return;
 
-  fetch(`http://localhost:8080/api/professeurs/by-departement/${encodeURIComponent(chefDepartementId)}?chefId=${currentUserId}`)
+  fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-departement/${encodeURIComponent(chefDepartementId)}?chefId=${currentUserId}`)
     .then(res => res.json())
     .then(data => {
       console.log("Professeurs reçus :", data);
@@ -160,7 +160,7 @@ function loadMessages() {
 
   console.log("📨 Chargement messages pour conversation ID:", conversationId);
 
-  fetch(`http://localhost:8080/api/messagerie/by-conversation?conversationId=${conversationId}`)
+  fetch(`https://wlt-usthb-backend.onrender.com/api/messagerie/by-conversation?conversationId=${conversationId}`)
     .then(res => res.json())
     .then(data => {
       console.log("📬 Messages reçus:", data);

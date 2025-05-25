@@ -70,13 +70,13 @@
     }
 
     async function startStats(departementId) {
-  const response = await fetch(`http://localhost:8080/api/form/inscrits/${departementId}`);
+  const response = await fetch(`https://wlt-usthb-backend.onrender.com/api/form/inscrits/${departementId}`);
   const rawProfessors = await response.json();
 
   // Fetch full voeux per prof
   const enrichedProfessors = await Promise.all(rawProfessors.map(async (prof) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/form/get?professeurId=${prof.id}`);
+      const res = await fetch(`https://wlt-usthb-backend.onrender.com/api/form/get?professeurId=${prof.id}`);
       const data = await res.json();
 
       console.log(`📦 Données récupérées pour ${prof.name} :`, data);
@@ -115,7 +115,7 @@ function downloadBackendExcel(semestre) {
     return;
   }
 
-  const url = `http://localhost:8080/api/admin/export/s${semestre}?profId=${profId}`;
+  const url = `https://wlt-usthb-backend.onrender.com/api/admin/export/s${semestre}?profId=${profId}`;
 
   fetch(url)
     .then(response => {
