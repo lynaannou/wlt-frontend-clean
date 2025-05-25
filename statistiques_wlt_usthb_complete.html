@@ -53,7 +53,7 @@
     const storedDepartementId = localStorage.getItem("departementId");
 
     if (!storedDepartementId) {
-      fetch(`http://localhost:8080/api/professeurs/by-email?email=${encodeURIComponent(email)}`)
+      fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-email?email=${encodeURIComponent(email)}`)
         .then(res => res.json())
         .then(professeur => {
   if (professeur?.departement) {
