@@ -123,7 +123,9 @@ function downloadBackendExcel(semestre) {
 
   const url = `https://wlt-usthb-backend.onrender.com/api/admin/export/s${semestre}?profId=${profId}`;
 
-  fetch(url)
+  fetch(url, {
+  credentials: "include" // ✅ Added
+})
     .then(response => {
       if (!response.ok) throw new Error("Erreur lors de la génération du fichier.");
       return response.blob();
