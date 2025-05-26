@@ -36,8 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (isAdmin) {
-    fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-email?email=${encodeURIComponent(email)}`)
-      .then(res => {
+   fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-email?email=${encodeURIComponent(email)}`, {
+  credentials: "include"
+})
+ .then(res => {
         if (!res.ok) throw new Error("Professeur introuvable");
         return res.json();
       })
@@ -61,8 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   } else {
     // Professeur
-    fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/conversation-with-chef/${currentUserId}`)
-      .then(res => res.json())
+    fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/conversation-with-chef/${currentUserId}`, {
+  credentials: "include"
+})
+  .then(res => res.json())
       .then(id => {
         conversationId = id;
         currentContactName = "Votre Chef";
@@ -83,14 +87,16 @@ chatForm.addEventListener("submit", function (e) {
   if (!newMessage) return;
 
   fetch("https://wlt-usthb-backend.onrender.com/api/messagerie/messages/send", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      senderId: currentUserId,
-      conversationId: conversationId,
-      content: newMessage
-    })
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  credentials: "include", // ✅ added
+  body: JSON.stringify({
+    senderId: currentUserId,
+    conversationId: conversationId,
+    content: newMessage
   })
+})
+
     .then(res => {
       if (!res.ok) throw new Error("Erreur d'envoi");
       return res.text();
@@ -105,8 +111,10 @@ chatForm.addEventListener("submit", function (e) {
 function loadConversations() {
   if (!isAdmin) return;
 
-  fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-departement/${encodeURIComponent(chefDepartementId)}?chefId=${currentUserId}`)
-    .then(res => res.json())
+ fetch(`https://wlt-usthb-backend.onrender.com/api/professeurs/by-departement/${encodeURIComponent(chefDepartementId)}?chefId=${currentUserId}`, {
+  credentials: "include"
+})
+  .then(res => res.json())
     .then(data => {
       console.log("Professeurs reçus :", data);
       conversationList.innerHTML = "<strong>Conversations :</strong><br/>";
@@ -160,8 +168,10 @@ function loadMessages() {
 
   console.log("📨 Chargement messages pour conversation ID:", conversationId);
 
-  fetch(`https://wlt-usthb-backend.onrender.com/api/messagerie/by-conversation?conversationId=${conversationId}`)
-    .then(res => res.json())
+ fetch(`https://wlt-usthb-backend.onrender.com/api/messagerie/by-conversation?conversationId=${conversationId}`, {
+  credentials: "include"
+})
+  .then(res => res.json())
     .then(data => {
       console.log("📬 Messages reçus:", data);
 

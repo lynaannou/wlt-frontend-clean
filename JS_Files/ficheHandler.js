@@ -3,8 +3,9 @@ const BASE_URL = "https://wlt-usthb-backend.onrender.com/api/form";
 // Soumettre le formulaire
 export async function submitForm(data) {
   const res = await fetch(`${BASE_URL}/submit`, {
-    method: "POST",
+      method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include", // ✅ Added
     body: JSON.stringify(data)
   });
   return res;
@@ -12,26 +13,33 @@ export async function submitForm(data) {
 
 // Vérifier si le prof a déjà soumis
 export async function hasAlreadySubmitted(profId) {
-  const res = await fetch(`${BASE_URL}/status?professeurId=${profId}`);
-  return res.text();
+  const res = await fetch(`${BASE_URL}/status?professeurId=${profId}`, {
+    credentials: "include" // ✅ Added
+  });
+   return res.text();
 }
 
 // Vérifier si le formulaire est verrouillé
 export async function isFormLocked() {
-  const res = await fetch(`${BASE_URL}/locked`);
+  const res = await fetch(`${BASE_URL}/locked`, {
+    credentials: "include" // ✅ Added
+  });
   return res.text();
 }
 
 // Récupérer les voeux actuels
 export async function getCurrentVoeux(profId) {
-  const res = await fetch(`${BASE_URL}/get?professeurId=${profId}`);
+  const res = await fetch(`${BASE_URL}/get?professeurId=${profId}`, {
+    credentials: "include" // ✅ Added
+  });
   return res.json();
 }
 
 // Récupérer les voeux de l'année précédente
 export async function prefillFromLastYear(profId) {
   const res = await fetch(`${BASE_URL}/formulaire-choix?professeurId=${profId}&copierAnneePrecedente=true`, {
-    method: "PUT"
+   method: "PUT",
+    credentials: "include" // ✅ Added
   });
   return res.json();
 }
@@ -40,13 +48,18 @@ export async function prefillFromLastYear(profId) {
 export async function getFilteredModules(semestre, pallier, specialite) {
   let url = `${BASE_URL}/modules?semestre=${semestre}&pallier=${pallier}`;
   if (specialite) url += `&specialite=${specialite}`;
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    credentials: "include" // ✅ Added
+  });
   return res.json();
+ 
 }
 
 // Filtrer spécialités
 export async function getFilteredSpecialites(semestre, pallier) {
-  const res = await fetch(`${BASE_URL}/specialites?semestre=${semestre}&pallier=${pallier}`);
+ const res = await fetch(`${BASE_URL}/specialites?semestre=${semestre}&pallier=${pallier}`, {
+    credentials: "include" // ✅ Added
+  });
   return res.json();
 }
 // Enregistrer les voeux en localStorage pour affichage dans confirmation.html

@@ -30,19 +30,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   let deadlineStr = null;
 
   async function getDeadline() {
-    const res = await fetch("https://wlt-usthb-backend.onrender.com/api/admin/deadline");
+    const res = await fetch("https://wlt-usthb-backend.onrender.com/api/admin/deadline", {
+  credentials: "include"
+});
+
     const text = await res.text();
     return text;
   }
 
   async function postDeadline(payload) {
     const res = await fetch("https://wlt-usthb-backend.onrender.com/api/admin/deadline", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  credentials: "include", // 🔥 this is crucial
+  body: JSON.stringify(payload)
+});
+
     return res;
   }
 

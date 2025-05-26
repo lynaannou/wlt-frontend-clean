@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: {
             "Content-Type": "application/json"
           },
+          credentials: "include", // ✅ REQUIRED for session/cookie-based auth
           body: JSON.stringify({ email, password })
         });
 
